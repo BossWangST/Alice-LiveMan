@@ -49,6 +49,7 @@ import org.apache.http.util.EntityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import site.alice.liveman.model.LiveManSetting;
+import site.alice.liveman.model.ProxyInfo;
 import site.alice.liveman.model.ServerInfo;
 
 import javax.net.ssl.SSLContext;
@@ -367,12 +368,22 @@ public class HttpRequestUtil {
 
         @Override
         public Socket createSocket(final HttpContext context) {
+            /*
             Proxy proxy = liveManSetting.getProxy();
             if (proxy == null) {
                 return new Socket();
             } else {
                 return new Socket(proxy);
             }
+             */
+            ProxyInfo proxyInfo=new ProxyInfo();
+            proxyInfo.setHost("127.0.0.1");
+            proxyInfo.setPort(7890);
+            proxyInfo.setType(Proxy.Type.SOCKS);
+
+            Proxy proxy = new Proxy(proxyInfo.getType(), new InetSocketAddress(proxyInfo.getHost(), proxyInfo.getPort()));
+
+            return new Socket(proxy);
         }
 
         @Override
@@ -391,12 +402,23 @@ public class HttpRequestUtil {
 
         @Override
         public Socket createSocket(final HttpContext context) {
+            /*
             Proxy proxy = liveManSetting.getProxy();
             if (proxy == null) {
                 return new Socket();
             } else {
                 return new Socket(proxy);
             }
+
+             */
+            ProxyInfo proxyInfo=new ProxyInfo();
+            proxyInfo.setHost("127.0.0.1");
+            proxyInfo.setPort(7890);
+            proxyInfo.setType(Proxy.Type.SOCKS);
+
+            Proxy proxy = new Proxy(proxyInfo.getType(), new InetSocketAddress(proxyInfo.getHost(), proxyInfo.getPort()));
+
+            return new Socket(proxy);
         }
 
         @Override
