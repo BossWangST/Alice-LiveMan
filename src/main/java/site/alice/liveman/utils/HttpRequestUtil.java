@@ -33,6 +33,7 @@ import org.apache.http.client.protocol.HttpClientContext;
 import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.http.config.Registry;
 import org.apache.http.config.RegistryBuilder;
+import org.apache.http.conn.params.ConnRouteParams;
 import org.apache.http.conn.socket.ConnectionSocketFactory;
 import org.apache.http.conn.socket.PlainConnectionSocketFactory;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
@@ -54,11 +55,9 @@ import site.alice.liveman.model.ServerInfo;
 
 import javax.net.ssl.SSLContext;
 import java.io.*;
-import java.net.InetSocketAddress;
-import java.net.Proxy;
-import java.net.Socket;
-import java.net.URI;
+import java.net.*;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -431,5 +430,17 @@ public class HttpRequestUtil {
                 final HttpContext context) throws IOException {
             return super.connectSocket(connectTimeout, socket, host, remoteAddress, localAddress, context);
         }
+    }
+
+    public static void main(String[] args) {
+        try {
+            String res=HttpRequestUtil.downloadUrl(new URI("https://www.youtube.com/channel/UCTIE7LM5X15NVugV7Krp9Hw/live"), StandardCharsets.UTF_8);
+            System.out.println(res);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        }
+
     }
 }
