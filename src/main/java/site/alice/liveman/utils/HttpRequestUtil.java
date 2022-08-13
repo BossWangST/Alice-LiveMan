@@ -127,14 +127,6 @@ public class HttpRequestUtil {
         try (CloseableHttpResponse httpResponse = client.execute(httpGet, context)) {
             //HttpEntity responseEntity = httpResponse.getEntity();
             BufferedReader bufferedReader = null;
-            /*
-            if (httpResponse.getLastHeader("content-encoding").getValue().equals("br")) {
-                bufferedReader = new BufferedReader(new InputStreamReader(new BrotliInputStream(httpResponse.getEntity().getContent())));
-            } else {
-                bufferedReader = new BufferedReader(new InputStreamReader(httpResponse.getEntity().getContent()));
-            }
-
-             */
             bufferedReader = new BufferedReader(new InputStreamReader(httpResponse.getEntity().getContent()));
             StringBuilder result = new StringBuilder();
             String str = null;
@@ -227,11 +219,18 @@ public class HttpRequestUtil {
             httpPost.setEntity(urlEncodedFormEntity);
         }
         try (CloseableHttpResponse httpResponse = client.execute(httpPost, context)) {
-            HttpEntity responseEntity = httpResponse.getEntity();
-            if (httpResponse.getStatusLine().getStatusCode() != 200) {
-                throw new IOException(httpResponse.getStatusLine().getStatusCode() + " " + httpResponse.getStatusLine().getReasonPhrase() + "\n Headers:" + Arrays.toString(httpResponse.getAllHeaders()) + "\n" + EntityUtils.toString(responseEntity));
+            BufferedReader bufferedReader = null;
+            bufferedReader = new BufferedReader(new InputStreamReader(httpResponse.getEntity().getContent()));
+            StringBuilder result = new StringBuilder();
+            String str = null;
+            while ((str = bufferedReader.readLine()) != null) {
+                result.append(str);
             }
-            return EntityUtils.toString(responseEntity, charset);
+            if (httpResponse.getStatusLine().getStatusCode() != 200) {
+                throw new IOException(httpResponse.getStatusLine().getStatusCode() + " " + httpResponse.getStatusLine().getReasonPhrase() + "\n Headers:" + Arrays.toString(httpResponse.getAllHeaders()) + "\n" + result.toString());
+            }
+            //return EntityUtils.toString(responseEntity, charset);
+            return result.toString();
         } catch (IllegalStateException e) {
             initClient();
             throw e;
@@ -454,15 +453,4 @@ public class HttpRequestUtil {
         }
     }
 
-    public static void main(String[] args) {
-        try {
-            String res = HttpRequestUtil.downloadUrl(new URI("https://www.youtube.com/channel/UCTIE7LM5X15NVugV7Krp9Hw/live"), StandardCharsets.UTF_8);
-            System.out.println(res);
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
-        }
-
-    }
 }
