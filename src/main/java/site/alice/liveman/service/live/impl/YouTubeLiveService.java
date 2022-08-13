@@ -83,19 +83,22 @@ public class YouTubeLiveService extends LiveService {
             if (browseIdMatcher.find()) {
                 description = browseIdMatcher.group(1);
             }
-            String[] m3u8List = HttpRequestUtil.downloadUrl(new URI(hlsvpUrl), StandardCharsets.UTF_8).split("\n");
+            String[] m3u8List = HttpRequestUtil.downloadUrl(new URI(hlsvpUrl), StandardCharsets.UTF_8).split("#EXT-X-STREAM-INF");
             String mediaUrl = null;
             StreamInfo streamInfo = null;
             for (int i = 0; i < m3u8List.length; i++) {
-                if (m3u8List[i].startsWith("#EXTM3U#EXT-X-INDEPENDENT-SEGMENTS#EXT-X-STREAM-INF") && m3u8List[i].contains(resolution)) {
+                if (m3u8List[i].startsWith("BANDWIDTH") && m3u8List[i].contains(resolution)) {
                     streamInfo = M3u8Util.getStreamInfo(m3u8List[i]);
-                    mediaUrl = m3u8List[i + 1];
+                    mediaUrl = streamInfo.getM3u8Link();
                     break;
                 }
             }
             if (mediaUrl == null) {
+                /*
                 streamInfo = M3u8Util.getStreamInfo(m3u8List[m3u8List.length - 2]);
                 mediaUrl = m3u8List[m3u8List.length - 1];
+                 */
+                throw new RuntimeException("获取直播信息失败!");
             }
             String[] videoParts = videoId.split("\\.");
             VideoInfo videoInfo = new VideoInfo(channelInfo, videoParts[0], videoTitle, videoInfoUrl, new URI(mediaUrl), "m3u8");

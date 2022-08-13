@@ -32,6 +32,8 @@ public class M3u8Util {
         private String resolution;
         private Double frameRate;
 
+        private String m3u8Link;
+
         public StreamInfo(Map<String, String> propertyMap) {
             this.bandwidth = propertyMap.get("BANDWIDTH");
             this.codecs = propertyMap.get("CODECS");
@@ -42,6 +44,7 @@ public class M3u8Util {
                 }
             } catch (NumberFormatException ignore) {
             }
+            this.m3u8Link=propertyMap.get("CLOSED-CAPTIONS").substring(4);
         }
 
         public String getBandwidth() {
@@ -74,6 +77,10 @@ public class M3u8Util {
 
         public void setFrameRate(Double frameRate) {
             this.frameRate = frameRate;
+        }
+
+        public String getM3u8Link() {
+            return m3u8Link;
         }
     }
 
