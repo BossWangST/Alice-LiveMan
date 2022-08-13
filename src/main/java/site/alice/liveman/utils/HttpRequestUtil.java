@@ -115,8 +115,9 @@ public class HttpRequestUtil {
             httpGet.setHeader("Cookie", cookies);
         }
         httpGet.setHeader("Accept", "*/*");
-        httpGet.setHeader("Accept-Encoding", "gzip, deflate, br");
+        //httpGet.setHeader("Accept-Encoding", "gzip, deflate, br");
         //httpGet.setHeader("Accept-Encoding", "br");
+        httpGet.setHeader("Accept-Encoding", "deflate");
         httpGet.setHeader("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.0.0 Safari/537.36");
         if (requestProperties != null) {
             for (Map.Entry<String, String> entry : requestProperties.entrySet()) {
