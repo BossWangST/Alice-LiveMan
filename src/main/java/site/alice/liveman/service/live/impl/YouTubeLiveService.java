@@ -87,7 +87,7 @@ public class YouTubeLiveService extends LiveService {
             String mediaUrl = null;
             StreamInfo streamInfo = null;
             for (int i = 0; i < m3u8List.length; i++) {
-                if (m3u8List[i].startsWith("#EXT-X-STREAM-INF") && m3u8List[i].contains(resolution)) {
+                if (m3u8List[i].startsWith("#EXTM3U#EXT-X-INDEPENDENT-SEGMENTS#EXT-X-STREAM-INF") && m3u8List[i].contains(resolution)) {
                     streamInfo = M3u8Util.getStreamInfo(m3u8List[i]);
                     mediaUrl = m3u8List[i + 1];
                     break;
