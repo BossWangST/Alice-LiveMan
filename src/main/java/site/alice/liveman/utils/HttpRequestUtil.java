@@ -117,7 +117,7 @@ public class HttpRequestUtil {
         httpGet.setHeader("Accept", "*/*");
         //httpGet.setHeader("Accept-Encoding", "gzip, deflate, br");
         //httpGet.setHeader("Accept-Encoding", "br");
-        httpGet.setHeader("Accept-Encoding", "deflate");
+        httpGet.setHeader("Accept-Encoding", "gzip, deflate");
         httpGet.setHeader("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.0.0 Safari/537.36");
         if (requestProperties != null) {
             for (Map.Entry<String, String> entry : requestProperties.entrySet()) {
@@ -127,11 +127,15 @@ public class HttpRequestUtil {
         try (CloseableHttpResponse httpResponse = client.execute(httpGet, context)) {
             //HttpEntity responseEntity = httpResponse.getEntity();
             BufferedReader bufferedReader = null;
+            /*
             if (httpResponse.getLastHeader("content-encoding").getValue().equals("br")) {
                 bufferedReader = new BufferedReader(new InputStreamReader(new BrotliInputStream(httpResponse.getEntity().getContent())));
             } else {
                 bufferedReader = new BufferedReader(new InputStreamReader(httpResponse.getEntity().getContent()));
             }
+
+             */
+            bufferedReader = new BufferedReader(new InputStreamReader(httpResponse.getEntity().getContent()));
             StringBuilder result = new StringBuilder();
             String str = null;
             while ((str = bufferedReader.readLine()) != null) {
