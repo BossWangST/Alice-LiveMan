@@ -97,7 +97,7 @@ public class HttpRequestUtil {
         connectionManager = new PoolingHttpClientConnectionManager(reg);
         connectionManager.setMaxTotal(1000);
         connectionManager.setDefaultMaxPerRoute(50);
-        client = HttpClients.custom().setConnectionManager(connectionManager).setConnectionManagerShared(true).build();
+        client = HttpClients.custom().setConnectionManager(connectionManager).setConnectionManagerShared(true).setProxy(new HttpHost("127.0.0.1",7890,"http")).build();
     }
 
     public static String downloadUrl(URI url, Charset charset) throws IOException {

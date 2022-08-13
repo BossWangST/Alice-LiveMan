@@ -46,6 +46,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Slf4j
 public class M3u8MediaProxyTask extends MediaProxyTask {
@@ -197,13 +199,13 @@ public class M3u8MediaProxyTask extends MediaProxyTask {
             List<M3u8SeqInfo> tempSeqList = new LinkedList<>();
             long start = System.nanoTime();
             try {
-                String m3u8Context = HttpRequestUtil.downloadUrl(getSourceUrl(), Charset.defaultCharset());
-                String[] m3u8Lines = m3u8Context.split("\n");
+                String[] m3u8Lines = HttpRequestUtil.downloadUrl(getSourceUrl(), Charset.defaultCharset()).split("#EXTINF:");
                 int seqCount = 0;
                 int readSeqCount = 0;
                 int startSeq = 0;
                 for (String m3u8Line : m3u8Lines) {
                     if (!m3u8Line.startsWith("#") && StringUtils.isNotEmpty(m3u8Line.trim())) {
+                        m3u8Line=m3u8Line.substring(4);
                         int currentSeqIndex = (startSeq + seqCount);
                         if (currentSeqIndex > lastSeqIndex) {
                             M3u8SeqInfo m3u8SeqInfo = new M3u8SeqInfo();
@@ -217,8 +219,14 @@ public class M3u8MediaProxyTask extends MediaProxyTask {
                         }
                         seqCount++;
                     } else {
-                        if (m3u8Line.startsWith("#EXT-X-MEDIA-SEQUENCE:")) {
-                            startSeq = Integer.parseInt(m3u8Line.split(":")[1]);
+                        if (m3u8Line.contains("#EXT-X-MEDIA-SEQUENCE:")) {
+                            Pattern p=Pattern.compile("#EXT-X-MEDIA-SEQUENCE:(\\d+)");
+                            Matcher m=p.matcher(m3u8Line);
+                            if(m.find()) {
+                                startSeq = Integer.valueOf(m.group(1));
+                            }else{
+                                m.group(0);// throw exception
+                            }
                         }
                     }
                 }
