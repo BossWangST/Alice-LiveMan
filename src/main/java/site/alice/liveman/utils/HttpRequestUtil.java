@@ -17,6 +17,8 @@
  */
 package site.alice.liveman.utils;
 
+import org.brotli.dec.BrotliInputStream;
+
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.http.HttpEntity;
@@ -74,7 +76,7 @@ public class HttpRequestUtil {
     }
 
     private static PoolingHttpClientConnectionManager connectionManager;
-    private static CloseableHttpClient                client;
+    private static CloseableHttpClient client;
 
     static {
         initClient();
@@ -113,7 +115,8 @@ public class HttpRequestUtil {
             httpGet.setHeader("Cookie", cookies);
         }
         httpGet.setHeader("Accept", "*/*");
-        httpGet.setHeader("Accept-Encoding", "gzip");//, deflate");//, br");
+        //httpGet.setHeader("Accept-Encoding", "gzip, deflate, br");
+        httpGet.setHeader("Accept-Encoding", "br");
         httpGet.setHeader("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.0.0 Safari/537.36");
         if (requestProperties != null) {
             for (Map.Entry<String, String> entry : requestProperties.entrySet()) {
@@ -121,11 +124,18 @@ public class HttpRequestUtil {
             }
         }
         try (CloseableHttpResponse httpResponse = client.execute(httpGet, context)) {
-            HttpEntity responseEntity = httpResponse.getEntity();
-            if (httpResponse.getStatusLine().getStatusCode() != 200) {
-                throw new IOException(httpResponse.getStatusLine().getStatusCode() + " " + httpResponse.getStatusLine().getReasonPhrase() + "\n Headers:" + Arrays.toString(httpResponse.getAllHeaders()) + "\n" + EntityUtils.toString(responseEntity));
+            //HttpEntity responseEntity = httpResponse.getEntity();
+            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(new BrotliInputStream(httpResponse.getEntity().getContent())));
+            StringBuilder result = new StringBuilder();
+            String str = null;
+            while((str=bufferedReader.readLine())!=null){
+                result.append(str);
             }
-            return EntityUtils.toString(responseEntity, charset);
+            if (httpResponse.getStatusLine().getStatusCode() != 200) {
+                throw new IOException(httpResponse.getStatusLine().getStatusCode() + " " + httpResponse.getStatusLine().getReasonPhrase() + "\n Headers:" + Arrays.toString(httpResponse.getAllHeaders()) + "\n" + result);
+            }
+            //return EntityUtils.toString(responseEntity, charset);
+            return result.toString();
         } catch (IllegalStateException e) {
             initClient();
             throw e;
@@ -436,7 +446,7 @@ public class HttpRequestUtil {
 
     public static void main(String[] args) {
         try {
-            String res=HttpRequestUtil.downloadUrl(new URI("https://www.youtube.com/channel/UCTIE7LM5X15NVugV7Krp9Hw/live"), StandardCharsets.UTF_8);
+            String res = HttpRequestUtil.downloadUrl(new URI("https://www.youtube.com/channel/UCTIE7LM5X15NVugV7Krp9Hw/live"), StandardCharsets.UTF_8);
             System.out.println(res);
         } catch (IOException e) {
             e.printStackTrace();
