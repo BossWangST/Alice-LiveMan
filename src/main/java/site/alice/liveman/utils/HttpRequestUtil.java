@@ -104,6 +104,7 @@ public class HttpRequestUtil {
 
     public static String downloadUrl(URI url, String cookies, Map<String, String> requestProperties, Charset charset) throws IOException {
         HttpGet httpGet = new HttpGet(url);
+
         HttpClientContext context = HttpClientContext.create();
         RequestConfig.Builder builder = RequestConfig.custom();
         builder.setConnectTimeout(2000).setConnectionRequestTimeout(2000).setSocketTimeout(5000).setCookieSpec(CookieSpecs.IGNORE_COOKIES).setRedirectsEnabled(true);
@@ -112,8 +113,8 @@ public class HttpRequestUtil {
             httpGet.setHeader("Cookie", cookies);
         }
         httpGet.setHeader("Accept", "*/*");
-        httpGet.setHeader("Accept-Encoding", "gzip, deflate");
-        httpGet.setHeader("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.77 Safari/537.36");
+        httpGet.setHeader("Accept-Encoding", "gzip, deflate, br");
+        httpGet.setHeader("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.0.0 Safari/537.36");
         if (requestProperties != null) {
             for (Map.Entry<String, String> entry : requestProperties.entrySet()) {
                 httpGet.setHeader(entry.getKey(), entry.getValue());
@@ -367,14 +368,13 @@ public class HttpRequestUtil {
 
         @Override
         public Socket createSocket(final HttpContext context) {
-            /*
             Proxy proxy = liveManSetting.getProxy();
             if (proxy == null) {
                 return new Socket();
             } else {
                 return new Socket(proxy);
             }
-             */
+            /*
             ProxyInfo proxyInfo=new ProxyInfo();
             proxyInfo.setHost("127.0.0.1");
             proxyInfo.setPort(7890);
@@ -383,6 +383,8 @@ public class HttpRequestUtil {
             Proxy proxy = new Proxy(proxyInfo.getType(), new InetSocketAddress(proxyInfo.getHost(), proxyInfo.getPort()));
 
             return new Socket(proxy);
+
+             */
         }
 
         @Override
@@ -401,7 +403,6 @@ public class HttpRequestUtil {
 
         @Override
         public Socket createSocket(final HttpContext context) {
-            /*
             Proxy proxy = liveManSetting.getProxy();
             if (proxy == null) {
                 return new Socket();
@@ -409,7 +410,7 @@ public class HttpRequestUtil {
                 return new Socket(proxy);
             }
 
-             */
+            /*
             ProxyInfo proxyInfo=new ProxyInfo();
             proxyInfo.setHost("127.0.0.1");
             proxyInfo.setPort(7890);
@@ -418,6 +419,7 @@ public class HttpRequestUtil {
             Proxy proxy = new Proxy(proxyInfo.getType(), new InetSocketAddress(proxyInfo.getHost(), proxyInfo.getPort()));
 
             return new Socket(proxy);
+             */
         }
 
         @Override
