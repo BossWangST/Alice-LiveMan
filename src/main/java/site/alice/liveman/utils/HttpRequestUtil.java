@@ -125,7 +125,7 @@ public class HttpRequestUtil {
             if (httpResponse.getStatusLine().getStatusCode() != 200) {
                 throw new IOException(httpResponse.getStatusLine().getStatusCode() + " " + httpResponse.getStatusLine().getReasonPhrase() + "\n Headers:" + Arrays.toString(httpResponse.getAllHeaders()) + "\n" + EntityUtils.toString(responseEntity));
             }
-            return EntityUtils.toString(responseEntity, charset);
+            return EntityUtils.toString(responseEntity);//, charset);
         } catch (IllegalStateException e) {
             initClient();
             throw e;
