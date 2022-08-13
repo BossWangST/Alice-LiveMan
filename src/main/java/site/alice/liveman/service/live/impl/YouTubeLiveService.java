@@ -83,7 +83,7 @@ public class YouTubeLiveService extends LiveService {
             if (browseIdMatcher.find()) {
                 description = browseIdMatcher.group(1);
             }
-            String[] m3u8List = HttpRequestUtil.downloadUrl(new URI(hlsvpUrl), StandardCharsets.UTF_8).split("#EXT-X-STREAM-INF");
+            String[] m3u8List = HttpRequestUtil.downloadUrl(new URI(hlsvpUrl), StandardCharsets.UTF_8).split("#EXT-X-STREAM-INF:");
             String mediaUrl = null;
             StreamInfo streamInfo = null;
             for (int i = 0; i < m3u8List.length; i++) {
