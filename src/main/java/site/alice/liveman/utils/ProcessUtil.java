@@ -197,7 +197,7 @@ public class ProcessUtil {
 
     public static class AliceProcess extends Process {
 
-        private Process        process;
+        private Process process;
         private ProcessBuilder processBuilder;
 
         public AliceProcess(Process process, ProcessBuilder processBuilder) {
@@ -254,10 +254,10 @@ public class ProcessUtil {
 
     private static class RemoteProcess extends AliceProcess {
 
-        private String     killRemoteProcessCmdLine = "ps -ef | grep -F \"%s\" | grep -v grep | awk -F ' ' '{print $2}'| xargs kill -9";
-        private Process    sshProcess;
+        private String killRemoteProcessCmdLine = "ps -ef | grep -F \"%s\" | grep -v grep | awk -F ' ' '{print $2}'| xargs kill -9";
+        private Process sshProcess;
         private ServerInfo remoteServer;
-        private String     cmdLine;
+        private String cmdLine;
 
         public RemoteProcess(Process sshProcess, ProcessBuilder builder, ServerInfo remoteServer, String cmdLine) {
             super(sshProcess, builder);
@@ -331,11 +331,15 @@ public class ProcessUtil {
     private static ProcessBuilder createRemoteProcessBuilder(ServerInfo remoteServer, String cmdLine, boolean terminalMode) {
         ProcessBuilder processBuilder = new ProcessBuilder();
         List<String> args = new ArrayList<>();
+        args.addAll(Arrays.asList("plink", "-pw", remoteServer.getPassword(), remoteServer.getUsername() + "@" + remoteServer.getAddress(), cmdLine));
+        /*
         args.addAll(Arrays.asList("sshpass", "-p", remoteServer.getPassword(), "ssh", "-o", "StrictHostKeyChecking=no"));
         if (terminalMode) {
             args.add("-tt");
         }
+
         args.addAll(Arrays.asList("-p", String.valueOf(remoteServer.getPort()), remoteServer.getUsername() + "@" + remoteServer.getAddress(), cmdLine));
+         */
         processBuilder.command(args);
         return processBuilder;
     }

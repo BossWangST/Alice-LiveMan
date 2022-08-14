@@ -403,12 +403,16 @@ public class BroadcastServiceManager implements ApplicationContextAware {
                                         lowVideoInfo.setCropConf(videoInfo.getCropConf());
                                         ffmpegCmdLine = FfmpegUtil.buildFfmpegCmdLine(lowVideoInfo, broadcastAddress);
                                         // pid = ProcessUtil.createProcess(ffmpegCmdLine, videoInfo.getVideoId());
+                                        /*
                                         availableServer = broadcastServerService.getAvailableServer(videoInfo);
                                         if (availableServer != null) {
                                             pid = ProcessUtil.createRemoteProcess(ffmpegCmdLine, availableServer, true, videoInfo.getVideoId());
                                         } else {
                                             continue;
                                         }
+
+                                         */
+                                        pid = ProcessUtil.createProcess(ffmpegCmdLine,lowVideoInfo.getVideoId());
                                         break;
                                     }
                                     default: {
