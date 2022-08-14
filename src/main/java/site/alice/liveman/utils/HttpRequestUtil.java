@@ -127,7 +127,7 @@ public class HttpRequestUtil {
         try (CloseableHttpResponse httpResponse = client.execute(httpGet, context)) {
             //HttpEntity responseEntity = httpResponse.getEntity();
             BufferedReader bufferedReader = null;
-            bufferedReader = new BufferedReader(new InputStreamReader(httpResponse.getEntity().getContent()));
+            bufferedReader = new BufferedReader(new InputStreamReader(httpResponse.getEntity().getContent(),StandardCharsets.UTF_8));
             StringBuilder result = new StringBuilder();
             String str = null;
             while ((str = bufferedReader.readLine()) != null) {
@@ -220,7 +220,7 @@ public class HttpRequestUtil {
         }
         try (CloseableHttpResponse httpResponse = client.execute(httpPost, context)) {
             BufferedReader bufferedReader = null;
-            bufferedReader = new BufferedReader(new InputStreamReader(httpResponse.getEntity().getContent()));
+            bufferedReader = new BufferedReader(new InputStreamReader(httpResponse.getEntity().getContent(),StandardCharsets.UTF_8));
             StringBuilder result = new StringBuilder();
             String str = null;
             while ((str = bufferedReader.readLine()) != null) {
